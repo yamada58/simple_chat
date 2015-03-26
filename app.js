@@ -14,7 +14,7 @@ var app = express();
 passport.use(new FacebookStrategy({
 		clientID: 353127931543410,
 		clientSecret: "669cce871efe69d51d6c0b5e14a563dc",
-		callbackURL: "http://ec2-52-68-15-251.ap-northeast-1.compute.amazonaws.com/auth/callback",
+		callbackURL: "http://ec2-52-68-27-163.ap-northeast-1.compute.amazonaws.com/auth/callback",
 		authPath: "/auth/",
 		callbackPath: "/auth/callback",
 		failureRedirect: "login"
@@ -34,11 +34,13 @@ passport.serializeUser(function(user, done){
 passport.deserializeUser(function(obj, done){
 	done(null, obj);
 });
+module.exports.passport = passport;
 
 var routes = require('./routes/index');
 var chat = require('./routes/chat');
 var users = require('./routes/users');
 var login = require('./routes/login');
+var auth = require('./routes/auth');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -62,9 +64,7 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/chat', chat);
 app.use('/login', login);
-
-app.get('/auth/', passport.authenticate('facebook'));
-app.get('/auth/callback', passport.authenticate('facebook', { successRedirect: '/',failureRedirect: '/login' }));
+app.use('/auth', auth);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
