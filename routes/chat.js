@@ -5,7 +5,7 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
   var db = module.parent.exports.set('db');
   console.log('url---->>>>>>  ' + req.route.path);
-  db.query('select * from todo_lists', function (err, rows) {
+  db.query('select * from chat_lists', function (err, rows) {
     res.contentType('application/json');
     var view = { chat_lists: rows ,title: 'chat'};
     res.send(JSON.stringify(view));
@@ -15,7 +15,7 @@ router.get('/', function(req, res, next) {
 router.get('/:id', function(req, res, next) {
   var db = module.parent.exports.set('db');
   console.log('url---->>>>>>  ' + req.route.path);
-  db.query('select * from todo_lists where id = ?', [ req.params.id ], function (err, rows) {
+  db.query('select * from chat_lists where id = ?', [ req.params.id ], function (err, rows) {
     res.contentType('application/json');
     var view = { chat: rows};
     res.send(JSON.stringify(view));
@@ -25,9 +25,9 @@ router.get('/:id', function(req, res, next) {
 router.post('/', function(req, res, next) {
   var db = module.parent.exports.set('db');
   console.log('url---->>>>>>  ' + req.route.path);
-  db.query('insert into todo_lists (todo, status) values (?, 0)', [ req.body.todo ], function (err, result) {
+  db.query('insert into chat_lists (comment, status, name) values (?, 0, ?)', [ req.body.comment, req.session.passport.user.displayName ], function (err, result) {
     res.contentType('application/json');
-    var view = { chat: req.body.todo, id: result.insertId};
+    var view = { chat: req.body.comment, id: result.insertId};
     res.send(JSON.stringify(view));
   });
 });
@@ -36,9 +36,9 @@ router.put('/:id', function(req, res, next) {
   var db = module.parent.exports.set('db');
   console.log('url---->>>>>>  ' + req.route.path);
   console.log('url---->>>>>>  ' + req.body.status);
-  db.query('update todo_lists set todo = ?, status = ? where id = ?', [ req.body.todo, req.body.status, req.params.id ], function (err, result) {
+  db.query('update chat_lists set comment = ?, status = ? where id = ?', [ req.body.comment, req.body.status, req.params.id ], function (err, result) {
     res.contentType('application/json');
-    var view = { chat: req.body.todo, id: req.params.id};
+    var view = { chat: req.body.comment, id: req.params.id};
     res.send(JSON.stringify(view));
   });
 });
@@ -46,9 +46,9 @@ router.put('/:id', function(req, res, next) {
 router.delete('/:id', function(req, res, next) {
   var db = module.parent.exports.set('db');
   console.log('url---->>>>>>  ' + req.route.path);
-  db.query('delete from todo_lists where id = ?', [ req.params.id ], function (err, result) {
+  db.query('delete from chat_lists where id = ?', [ req.params.id ], function (err, result) {
     res.contentType('application/json');
-    var view = { chat: req.body.todo, id: req.params.id};
+    var view = { chat: req.body.comment, id: req.params.id};
     res.send(JSON.stringify(view));
   });
 });

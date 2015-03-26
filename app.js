@@ -5,12 +5,40 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
+var passport = require('passport');
+var FacebookStrategy = require('passport-facebook').Strategy;
+var app = express();
+
+// auth
+passport.use(new FacebookStrategy({
+		clientID: 353127931543410,
+		clientSecret: "669cce871efe69d51d6c0b5e14a563dc",
+		callbackURL: "http://ec2-52-68-15-251.ap-northeast-1.compute.amazonaws.com/auth/callback",
+		authPath: "/auth/",
+		callbackPath: "/auth/callback",
+		failureRedirect: "login"
+	},
+	function(accessToken, refreshToken, profile, done) {
+  console.log('facebook--->>>>accessToken');
+  console.log(profile);
+		passport.session.accessToken = accessToken;
+		process.nextTick(function(){
+			done(null, profile);
+		});
+	}
+));
+passport.serializeUser(function(user, done){
+	done(null, user);
+});
+passport.deserializeUser(function(obj, done){
+	done(null, obj);
+});
 
 var routes = require('./routes/index');
 var chat = require('./routes/chat');
 var users = require('./routes/users');
-
-var app = express();
+var login = require('./routes/login');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -22,11 +50,21 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(session({
+	secret: process.env.SESSION_SECRET || 'session secret',
+	resave: false,
+	saveUninitialized: false
+}));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(passport.initialize());
 
 app.use('/', routes);
 app.use('/users', users);
 app.use('/chat', chat);
+app.use('/login', login);
+
+app.get('/auth/', passport.authenticate('facebook'));
+app.get('/auth/callback', passport.authenticate('facebook', { successRedirect: '/',failureRedirect: '/login' }));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -36,7 +36,7 @@ var app = app || {};
 		},
 		newAttributes : function() {
 			return {
-				todo : this.newChat.val().trim(),
+				comment : this.newChat.val().trim(),
 				status : 0
 			}
 		}
