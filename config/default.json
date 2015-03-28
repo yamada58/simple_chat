@@ -1,0 +1,15 @@
+{
+	"sequelize": {
+		"database": "study",
+		"username": "study",
+		"password": "study",
+		"options": {
+			"host": "localhost",
+			"dialect": "mysql",
+			"pool": {
+				"maxConnections": 5,
+				"maxIdleTime": 30
+			}
+		}
+	}
+}

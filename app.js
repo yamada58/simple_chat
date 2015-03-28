@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
+var db = require('./model');
 var app = express();
 
 // auth
@@ -28,6 +29,25 @@ passport.use(new FacebookStrategy({
 	}
 ));
 passport.serializeUser(function(user, done){
+	var User = global.db.User;
+	//存在チェック
+	User.find(user.id)
+		.error(function(err){
+			console.log(err);
+			})
+		.success(function(result){
+			console.log(result);
+			if (result === null) {
+				var url = 'https://graph.facebook.com/' + user.id + '/picture';
+				User.create({
+					id: user.id,
+					name: user.displayName,
+					image_path: url,
+				})
+				.error(function(err){})
+				.success(function(result){});
+			}
+		});
 	done(null, user);
 });
 passport.deserializeUser(function(obj, done){
@@ -97,12 +117,12 @@ app.use(function(err, req, res, next) {
 });
 
 // MySQL
-var pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'study',
-  password: process.env.DB_PASS || 'study',
-  database: process.env.DB_NAME || 'study'
-});
-app.set('db', pool);
+//var pool = mysql.createPool({
+//  host: process.env.DB_HOST || 'localhost',
+//  user: process.env.DB_USER || 'study',
+//  password: process.env.DB_PASS || 'study',
+//  database: process.env.DB_NAME || 'study'
+//});
+//app.set('db', pool);
 
 module.exports = app;

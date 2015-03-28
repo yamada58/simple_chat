@@ -16,8 +16,6 @@ var app = app || {};
 		initialize : function() {
 		},
 		render : function() {
-			console.log('-------render------');
-			console.log(this.model);
 			this.$el.html(this.template(this.model.toJSON()));
 			return this;
 		},

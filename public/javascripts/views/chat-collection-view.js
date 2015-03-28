@@ -26,7 +26,7 @@ var app = app || {};
 				wait : true
 			});
 			this.newChat.val('');
-			this.chatCollection.fetch();
+//			this.chatCollection.fetch();
 			this.emit(obj.toJSON());
 		},
 		addOne : function(chat) {
@@ -45,7 +45,8 @@ var app = app || {};
 		newAttributes : function() {
 			return {
 				comment : this.newChat.val().trim(),
-				status : 0
+				status : 0,
+				name : this.$('#displayName').text(),
 			}
 		}
 	});
