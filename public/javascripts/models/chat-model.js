@@ -6,8 +6,6 @@ var app = app || {};
 		urlRoot : '/chat/',
 		parse : function(response) {
 			//モデルをパース
-			console.log("モデルをパース");
-			console.log(response);
 			return response;
 		},
 		toggle : function() {

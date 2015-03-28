@@ -15,4 +15,10 @@ var app = app || {};
 			alert('id = ' + id + ' のTODO詳細表示');
 		},
 	});
+	app.socket = app.socket === undefined ? io.connect() : app.socket;
+	app.socket.on('recieve', function(data) {
+			var chatModel = new app.ChatModel();
+			chatModel.attributes = data;
+			app.chatCollection.addOne(chatModel);
+	});
 })(app);

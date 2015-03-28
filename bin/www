@@ -7,19 +7,24 @@
 var app = require('../app');
 var debug = require('debug')('chat:server');
 var http = require('http');
+var sio = require('../model/socketio');
 
 /**
  * Get port from environment and store in Express.
  */
 
 var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+app.set('port', 3000);
+
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+var server = app.listen(app.get('port'), function() {
+	debug('Express server listening on port ' + server.address().port);
+});
+sio(server);
 
 /**
  * Listen on provided port, on all network interfaces.

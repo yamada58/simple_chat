@@ -12,6 +12,7 @@ var app = app || {};
 			this.$el.html($('#list-template').html());
 			this.newChat = this.$('#new-chat');
 			this.render();
+			app.chatCollection = this;
 		},
 		events : {
 			'click #addChat' : 'onCreateChat',
@@ -21,18 +22,25 @@ var app = app || {};
 			return this;
 		},
 		onCreateChat : function(e) {
-			this.chatCollection.create(this.newAttributes(), {
+			var obj = this.chatCollection.create(this.newAttributes(), {
 				wait : true
 			});
 			this.newChat.val('');
 			this.chatCollection.fetch();
+			this.emit(obj.toJSON());
 		},
 		addOne : function(chat) {
-			console.log("addOne");
 			var itemView = new app.ChatItemView({
 				model : chat
 			});
 			$('#chat-lists').append(itemView.render().el);
+		},
+		emit : function(chat) {
+			app.socket.emit('notice', {
+				comment : chat.comment,
+				status : chat.status,
+				name : this.$('#displayName').text(),
+			});
 		},
 		newAttributes : function() {
 			return {
@@ -40,5 +48,5 @@ var app = app || {};
 				status : 0
 			}
 		}
-	})
+	});
 })(app);
