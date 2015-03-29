@@ -30,6 +30,8 @@ passport.use(new FacebookStrategy({
 ));
 passport.serializeUser(function(user, done){
 	var User = global.db.User;
+	var url = 'https://graph.facebook.com/' + user.id + '/picture';
+	user.image_path = url;
 	//存在チェック
 	User.find(user.id)
 		.error(function(err){
@@ -38,7 +40,6 @@ passport.serializeUser(function(user, done){
 		.success(function(result){
 			console.log(result);
 			if (result === null) {
-				var url = 'https://graph.facebook.com/' + user.id + '/picture';
 				User.create({
 					id: user.id,
 					name: user.displayName,
@@ -56,7 +57,7 @@ passport.deserializeUser(function(obj, done){
 
 var routes = require('./routes/index');
 var chat = require('./routes/chat');
-var users = require('./routes/users');
+var user = require('./routes/user');
 var login = require('./routes/login');
 
 // view engine setup
@@ -78,8 +79,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 
 app.use('/', routes);
-app.use('/users', users);
 app.use('/chat', chat);
+app.use('/user', user);
 app.use('/login', login);
 app.get('/auth/', passport.authenticate('facebook'));
 app.get('/auth/callback', passport.authenticate('facebook', { successRedirect: '/',failureRedirect: '/login' }));

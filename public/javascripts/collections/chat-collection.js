@@ -7,7 +7,6 @@ var app = app || {};
 		model : app.ChatModel,
 		parse : function(response) {
 			//コレクションをパース
-			console.log("コレクションをパース");
 			return response.chat_lists;
 		}
 	});

@@ -32,7 +32,8 @@ router.post('/', function(req, res, next) {
 	ChatLists.create({
 		comment: req.body.comment,
 		status: 0,
-		name: req.session.passport.user.displayName
+		name: req.session.passport.user.displayName,
+		image_path: req.session.passport.user.image_path
 		})
 		.error(function(err){})
 		.success(function(result){

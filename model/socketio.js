@@ -19,6 +19,7 @@ function sio(server) {
 				name : data.name,
 				status : data.status,
 				comment : data.comment,
+				image_path : data.image_path,
 			});
 		});
 	});
